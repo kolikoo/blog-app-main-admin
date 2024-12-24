@@ -13,7 +13,7 @@ export const getBlogById = async (id: string) => {
     .eq("id", id)
     .single()
     .throwOnError()
-    .then((res) => res.data);
+    .then((res) => res.data as Blog);
 };
 export const updateBlog = async (id: string, payload: Partial<Blog>) => {
   return await supabase
@@ -35,7 +35,6 @@ export const createBlog = async ({
     const res = await supabase.storage
       .from("blog_images")
       .upload(payload.image_url?.name, payload.image_url);
-
 
     const insertRes = await supabase.from("blogs").insert({
       title_ka: payload.title_ka,

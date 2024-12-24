@@ -4,6 +4,7 @@ import { formatDate } from "../../../../../lib/formatDate";
 import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import { DASHBOARD_PATH } from "../../../../../routes/dashboard/index.enum";
 const { Column } = Table;
 
 const AdminBlogsView: React.FC = () => {
@@ -12,11 +13,11 @@ const AdminBlogsView: React.FC = () => {
   console.log(blogsList);
 
   const handleNavigateBlogCreate = () => {
-    navigate("/dashboard/admin/blog-create");
+    navigate(`/${DASHBOARD_PATH.DASHBOARD}/${DASHBOARD_PATH.BLOGS_CREATE}`);
   };
 
   const handleNavigateBlogEdit = (id: number) => {
-    navigate(`/dashboard/admin/blog-update/${id}`);
+    navigate(`/${DASHBOARD_PATH.DASHBOARD}/${DASHBOARD_PATH.BLOGS_UPDATE}/${id}`);
   };
 
   const [expandedGeoRows, setExpandedGeoRows] = useState<Set<number>>(

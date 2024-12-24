@@ -4,23 +4,27 @@ import { useForm } from "antd/es/form/Form";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCreateUser } from "../../../../../react-query/mutation/user";
+import { DASHBOARD_PATH } from "../../../../../routes/dashboard/index.enum";
+import { useUsersQueryKeys } from "../../../../../react-query/query/users/useUsersQueryKeys";
 
 type FieldType = {
   email: string;
   password: string;
-  phone:string;
+  phone: string;
 };
 
 const UserCreateView: React.FC = () => {
+  const { LIST } = useUsersQueryKeys();
   const queryClient = useQueryClient();
   const [form] = useForm();
   const navigate = useNavigate();
-  const { mutate: handleCreateUser } = useCreateUser();
+  const { mutate: handleCreateUser } = useCreateUser({
+    onSuccess: () =>
+      navigate(`/${DASHBOARD_PATH.DASHBOARD}/${DASHBOARD_PATH.USERS}`),
+  });
   const onFinish = (values: FieldType) => {
-    handleCreateUser(values, {
-      onSuccess: () => navigate("/dashboard/admin/users"),
-    });
-    queryClient.invalidateQueries({ queryKey: ["users-list"] });
+    handleCreateUser(values);
+    queryClient.invalidateQueries({ queryKey: [LIST] });
   };
   return (
     <Form

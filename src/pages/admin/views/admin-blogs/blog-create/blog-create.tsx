@@ -8,13 +8,19 @@ import { useAtomValue } from "jotai";
 import { loginAtom } from "../../../../../store";
 import { useCreateBlog } from "../../../../../react-query/mutation/blogs";
 import { useNavigate } from "react-router";
+import { DASHBOARD_PATH } from "../../../../../routes/dashboard/index.enum";
+import { useBlogQueryKeys } from "../../../../../react-query/query/blogs/useBlogsQueryKeys";
 
 const BlogsCreateView: React.FC = () => {
+  const { LIST } = useBlogQueryKeys();
   const queryClient = useQueryClient();
   const user = useAtomValue(loginAtom);
   const [form] = useForm<BlogsForm>();
   const navigate = useNavigate();
-  const { mutate: handleCreateBlog } = useCreateBlog();
+  const { mutate: handleCreateBlog } = useCreateBlog({
+    onSuccess: () =>
+      navigate(`/${DASHBOARD_PATH.DASHBOARD}/${DASHBOARD_PATH.BLOGS}`),
+  });
   const [file, setFile] = useState<File | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -27,13 +33,8 @@ const BlogsCreateView: React.FC = () => {
       ...values,
       image_url: file || null,
     };
-    handleCreateBlog(
-      { payload, user },
-      {
-        onSuccess: () => navigate("/dashboard/admin/blogs"),
-      }
-    );
-    queryClient.invalidateQueries({ queryKey: ["blogs-list"] });
+    handleCreateBlog({ payload, user });
+    queryClient.invalidateQueries({ queryKey: [LIST] });
   };
   return (
     <Form

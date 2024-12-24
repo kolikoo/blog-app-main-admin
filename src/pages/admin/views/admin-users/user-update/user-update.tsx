@@ -6,23 +6,27 @@ import { useNavigate, useParams } from "react-router";
 import { useUpdateUser } from "../../../../../react-query/mutation/user";
 import { useQueryClient } from "@tanstack/react-query";
 import SkeletonLoading from "../../../../../components/skeleton-ui/skeleton";
+import { DASHBOARD_PATH } from "../../../../../routes/dashboard/index.enum";
+import { useUsersQueryKeys } from "../../../../../react-query/query/users/useUsersQueryKeys";
 type FieldType = {
   email: string;
   phone: string;
 };
 
 const UserUpdateView: React.FC = () => {
+  const {LIST} = useUsersQueryKeys()
   const queryClient = useQueryClient();
   const [form] = useForm<FieldType>();
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: user, isLoading, isFetching } = useGetUserById(id as string);
-  const { mutate: handleUpdateUser } = useUpdateUser(id as string);
+  const { mutate: handleUpdateUser } = useUpdateUser(id as string, {
+    onSuccess: () =>
+      navigate(`/${DASHBOARD_PATH.DASHBOARD}/${DASHBOARD_PATH.USERS}`),
+  });
   const onFinish = (values: FieldType) => {
-    handleUpdateUser(values, {
-      onSuccess: () => navigate("/dashboard/admin/users"),
-    });
-    queryClient.invalidateQueries({ queryKey: ["users-list"] });
+    handleUpdateUser(values);
+    queryClient.invalidateQueries({ queryKey: [LIST] });
   };
   if (isLoading || isFetching) {
     return <SkeletonLoading number={2} />;

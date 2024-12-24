@@ -2,6 +2,7 @@ import { Layout, Menu, MenuProps, theme } from "antd";
 import { Link, Outlet, useLocation } from "react-router";
 import { useLogOut } from "../../../react-query/mutation/auth";
 import { Button } from "antd";
+import { DASHBOARD_PATH } from "../../../routes/dashboard/index.enum";
 const { Header, Content, Sider } = Layout;
 const items1: MenuProps["items"] = [
   {
@@ -10,7 +11,7 @@ const items1: MenuProps["items"] = [
     children: [
       {
         key: 0,
-        label: <Link to="admin/users">Users</Link>,
+        label: <Link to={DASHBOARD_PATH.USERS}>Users</Link>,
       },
     ],
   },
@@ -20,7 +21,7 @@ const items1: MenuProps["items"] = [
     children: [
       {
         key: 1,
-        label: <Link to="admin/blogs">Blogs</Link>,
+        label: <Link to={DASHBOARD_PATH.BLOGS}>Blogs</Link>,
       },
     ],
   },

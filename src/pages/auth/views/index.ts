@@ -1,1 +1,1 @@
-export {default} from './sign-form-view'
+export { default } from "./sign-form-view";

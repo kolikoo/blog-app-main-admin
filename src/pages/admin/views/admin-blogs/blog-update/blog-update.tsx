@@ -6,6 +6,8 @@ import { useNavigate, useParams } from "react-router";
 import { useGetBlogsById } from "../../../../../react-query/query/blogs";
 import SkeletonLoading from "../../../../../components/skeleton-ui/skeleton";
 import { useUpdateBlog } from "../../../../../react-query/mutation/blogs";
+import { DASHBOARD_PATH } from "../../../../../routes/dashboard/index.enum";
+import { useBlogQueryKeys } from "../../../../../react-query/query/blogs/useBlogsQueryKeys";
 const { TextArea } = Input;
 type FieldType = {
   title_ka: string;
@@ -15,18 +17,20 @@ type FieldType = {
 };
 
 const BlogsUpdateView: React.FC = () => {
+  const { LIST } = useBlogQueryKeys();
   const queryClient = useQueryClient();
   const [form] = useForm<FieldType>();
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: blog, isLoading, isFetching } = useGetBlogsById(id as string);
-  const { mutate: handleUpdateBlog } = useUpdateBlog(id as string);
+  const { mutate: handleUpdateBlog } = useUpdateBlog(id as string, {
+    onSuccess: () =>
+      navigate(`/${DASHBOARD_PATH.DASHBOARD}/${DASHBOARD_PATH.BLOGS}`),
+  });
   const onFinish = (values: FieldType) => {
     console.log(values);
-    handleUpdateBlog(values, {
-      onSuccess: () => navigate("/dashboard/admin/blogs"),
-    });
-    queryClient.invalidateQueries({ queryKey: ["blogs-list"] });
+    handleUpdateBlog(values);
+    queryClient.invalidateQueries({ queryKey: [LIST] });
   };
   if (isLoading || isFetching) {
     return <SkeletonLoading number={4} />;
